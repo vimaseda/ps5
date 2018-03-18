@@ -1,4 +1,3 @@
-# 1 "mazes.mlpp"
 (*  
                                 CS 51
                              Spring 2018
@@ -7,11 +6,9 @@
                              Maze Puzzles
  *)
 
-# 13
-open Draw_soln
-open Gamedescription_soln
+open Draw
+open Gamedescription
 
-# 17
 module G = Graphics ;;
   
 (* Maze type definitions: 
@@ -55,6 +52,9 @@ module MakeMazeGameDescription (M : MAZEINFO)
     (* The player can move various ways in the maze *)
     type move = direction
 
+    (* Exception for invalid move *)
+    exception InvalidMove
+
     (* The initial state is the initial position of the player *)
     let initial_state : state = M.initial_pos
     let goal_state : state = M.goal_pos
@@ -71,9 +71,11 @@ module MakeMazeGameDescription (M : MAZEINFO)
         | Left -> fun (i, j) -> i, j + 1
         | Right -> fun (i, j) -> i, j - 1
 
+    let validate_pos (i,j) : bool = 
+       let (w, h) = M.dims in
+       i >= 0 && i < h && j >= 0 && j < h
+
     let neighbors (playerPos : state) : (state * move) list =
-      let (w, h) = M.dims in
-      let validate_pos (i, j) = i >= 0 && i < h && j >= 0 && j < h in
       [Up; Down; Left; Right]
       |> List.map (fun m -> ((move_to_fun m) playerPos), m)
       |> List.filter (fun (newPos, _) -> validate_pos newPos) (* don't go off the board *)
@@ -94,16 +96,18 @@ module MakeMazeGameDescription (M : MAZEINFO)
 
     let execute_moves (path : move list) : state = 
         let rec execute_helper (board : state) (p : move list) : state = 
-            match p with 
-            | [] -> board 
-            | hd :: tl -> 
-                let x, y = board in 
-                match hd with 
-                | Left -> execute_helper (x, y + 1) tl 
-                | Right -> execute_helper (x, y - 1) tl
-                | Up -> execute_helper (x - 1, y) tl
-                | Down -> execute_helper (x + 1, y) tl in 
-        execute_helper initial_state path
+            if validate_pos board then 
+              match p with 
+              | [] -> board 
+              | hd :: tl -> 
+                  let x, y = board in 
+                  match hd with 
+                  | Left -> execute_helper (x, y + 1) tl 
+                  | Right -> execute_helper (x, y - 1) tl
+                  | Up -> execute_helper (x - 1, y) tl
+                  | Down -> execute_helper (x + 1, y) tl in 
+               execute_helper initial_state path
+            else raise InvalidMove
                        
     (* Draws the map for a given maze. *)
     let draw_maze (maze_map : space array array) (elt_width : int) (elt_height : int) : unit =

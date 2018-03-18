@@ -1,4 +1,3 @@
-# 1 "gamedescription.mlpp"
 (*  
                                 CS 51
                              Spring 2018
@@ -28,6 +27,9 @@ module type GAMEDESCRIPTION =
 	   
     (* move -- The possible moves allowed by the game *)
     type move
+
+    (* invalid move exception *)
+    exception InvalidMove
            
     (* neighbors -- Given a state, return a list of moves and the states
      that they result in *)      

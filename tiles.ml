@@ -42,6 +42,9 @@ module MakeTileGameDescription (T : TILEINFO)
     (* Which direction the empty tile can move *)
     type move = direction
 
+    (* exception InvalidMove *)
+    exception InvalidMove
+
     (* The initial state is the initial state provided by the TILEINFO module *)
     let initial_state : state = T.initial
 
@@ -177,16 +180,21 @@ module MakeTileGameDescription (T : TILEINFO)
       in
       display_tile T.dims (moves_to_states initial_state path) 
 
-    let execute_moves (path : move list) : state = 
-      let rec move_helper (board : state) (p : move list) : state = 
+    let validate_pos (i, j) : bool = 
+      let (w, h) = T.dims in 
+      i >= 0 && i < h && j >= 0 && j < h
+
+    let rec move_helper (board : state) (p : move list) : state = 
         let e = find_empty board in 
         let new_board = copy_board board in 
         match p with 
         | [] -> board
         | hd :: tl -> 
            let new_empty = move_to_fun hd e in 
-           let _ = swap_tiles new_board e new_empty in 
-           move_helper new_board tl 
+           if (validate_pos new_empty) then
+            let _ = swap_tiles new_board e new_empty in 
+            move_helper new_board tl 
+           else raise InvalidMove
       in move_helper initial_state path
                      
     let neighbors (s : state) : (state * move) list =
