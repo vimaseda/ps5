@@ -42,7 +42,7 @@ module type GAMESOLVER =
 
 (* MakeGameSolver -- a higher-order functor that generates game solvers, with type
  
-        (GAMEDESCRIPTION -> COLLECTION) -> GAMEDESCRIPTION -> GAMESOLVER
+  (functor(sig type t end -> COLLECTION)) -> GAMEDESCRIPTION -> GAMESOLVER
 
    A functor that given a functor from a GAMEDESCRIPTION to a
    game description-specific Collection, as well as a GAMEDESCRIPTION,
@@ -76,7 +76,4 @@ responses and will use them to help guide us in creating future
 assignments.
 ......................................................................*)
 
-let minutes_spent () : int = failwith "not provided" ;;
-
-
-				     
+let minutes_spent_gamesolve () : int = failwith "not provided" ;;

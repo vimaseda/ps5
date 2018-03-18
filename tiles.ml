@@ -114,7 +114,7 @@ module MakeTileGameDescription (T : TILEINFO)
         | Left -> fun (i, j) -> i, j - 1
         | Right -> fun (i, j) -> i, j + 1
 
-    (* copy_voard -- Helper function that copies a tile board *)
+    (* copy_board -- Helper function that copies a tile board *)
     let copy_board (arr : board) : board =
         Array.map Array.copy arr
 

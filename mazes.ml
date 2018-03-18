@@ -1,3 +1,4 @@
+# 1 "mazes.mlpp"
 (*  
                                 CS 51
                              Spring 2018
@@ -6,9 +7,11 @@
                              Maze Puzzles
  *)
 
-open Draw
-open Gamedescription
+# 13
+open Draw_soln
+open Gamedescription_soln
 
+# 17
 module G = Graphics ;;
   
 (* Maze type definitions: 

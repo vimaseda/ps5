@@ -110,8 +110,8 @@ module MakeQueueList (Element : sig type t end)
    In this implementation, the queue is implemented as a pair of
    stacks (s1, s2) where the elements in the queue from highest to
    lowest priority (first to last to be taken) are given by s1 @
-   s2^R. Elements are added (in stack regime) to s2, and taken from
-   s1. When s1 is empty, s2 is reversed onto s1.
+   (the reverse of s2). Elements are added (in stack regime) 
+   to s2, and taken from s1. When s1 is empty, s2 is reversed onto s1.
  *)
 
 module MakeQueueStack (Element : sig type t end) 
@@ -119,3 +119,5 @@ module MakeQueueStack (Element : sig type t end)
   struct
     failwith "MakeQueueStack not implemented"
   end
+
+let minutes_spent_collections () : int = failwith "not provided" ;;
