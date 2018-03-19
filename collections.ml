@@ -43,7 +43,7 @@ sig
                                   
 end
   
-(*......................................................................
+(*----------------------------------------------------------------------
   Some useful collections
 
   To think about: For each of these implementations, what is the time
@@ -51,7 +51,9 @@ end
   collection? 
  *)
 
-(* Stacks implemented as lists *)
+(*......................................................................
+  Stacks implemented as lists 
+ *)
     
 module MakeStackList (Element : sig type t end)
        : (COLLECTION with type elt = Element.t) = 
@@ -78,7 +80,9 @@ module MakeStackList (Element : sig type t end)
       | _ -> raise Empty
 end
 
-(* Queues implemented as lists *)
+(*......................................................................
+  Queues implemented as lists 
+ *)
   
 module MakeQueueList (Element : sig type t end)
        : (COLLECTION with type elt = Element.t) =
@@ -105,13 +109,14 @@ module MakeQueueList (Element : sig type t end)
       | _ -> raise Empty
   end
 
-(* Queues implemented as two stacks
- 
-   In this implementation, the queue is implemented as a pair of
-   stacks (s1, s2) where the elements in the queue from highest to
-   lowest priority (first to last to be taken) are given by s1 @
-   (the reverse of s2). Elements are added (in stack regime) 
-   to s2, and taken from s1. When s1 is empty, s2 is reversed onto s1.
+(*......................................................................
+  Queues implemented as two stacks
+  
+  In this implementation, the queue is implemented as a pair of stacks
+  (s1, s2) where the elements in the queue from highest to lowest
+  priority (first to last to be taken) are given by s1 @ s2R (where
+  s2R is the reversal of s2). Elements are added (in stack regime) to
+  s2, and taken from s1. When s1 is empty, s2 is reversed onto s1.  
  *)
 
 module MakeQueueStack (Element : sig type t end) 

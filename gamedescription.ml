@@ -3,7 +3,7 @@
                              Spring 2018
                         Problem Set 5: Search
  
-			  Game Descriptions
+                          Game Descriptions
 
   Provides a GAMEDESCRIPTION module type, which will be an argument to
   the MakeGameSolver functor that creates a full Game module (see
@@ -24,7 +24,7 @@ module type GAMEDESCRIPTION =
   sig
     (* state -- The state of the game *)
     type state
-	   
+           
     (* move -- The possible moves allowed by the game *)
     type move
 
@@ -40,7 +40,7 @@ module type GAMEDESCRIPTION =
                              
     (* initial_state -- The designated initial state for the game *)
     val initial_state : state
-			
+                        
     (* compare_states -- Compare two states: -1 if s1 < s2; 0 if s1 =
      s2; +1 if s1 > s2 (consistent with Pervasives.compare) *)
     val compare_states : state -> state -> int

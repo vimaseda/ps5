@@ -1,10 +1,10 @@
 (** 
-		      General utilities for CS51
-			 -.-. ... ..... .----
-			  Stuart M. Shieber
+                      General utilities for CS51
+                         -.-. ... ..... .----
+                          Stuart M. Shieber
 
     Some utilities of general applicability for CS51.
-			  
+                          
     Note that some of these may not work on Windows systems, as they
     do not provide full support for Sys and Unix modules. Conditional
     execution could be added using Sys.os_type.  
@@ -52,19 +52,19 @@ let rec range (min : int) (max : int) : int list =
 
         # let n = 5 in
           verify (n mod 2 = 0) "n is %d, but should be even\n" n ;;
-	n is 5, but should be even
-	- : unit = ()
+        n is 5, but should be even
+        - : unit = ()
  *)
 
 let verify (condition : bool)
-	   (fmt : ('a, out_channel, unit) format)
+           (fmt : ('a, out_channel, unit) format)
          : 'a =
   if condition then Printf.ifprintf stdout fmt
   else Printf.printf fmt ;;
 
   
 (*----------------------------------------------------------------------
-  Performance monitoring	
+  Performance monitoring        
  *)
 
 (* call_timed f x -- Applies f to x returning a pair of the result and

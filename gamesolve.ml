@@ -3,7 +3,7 @@
                              Spring 2018
                         Problem Set 5: Search
  
-			     Game Solving
+                             Game Solving
 
 This file contains the signature for a GAMESOLVER module as well as a
 higher-order functor, MakeGameSolver. A GAMESOLVER module solves the
@@ -50,8 +50,8 @@ module type GAMESOLVER =
  *)
 
 module MakeGameSolver (DSFunc : functor(Element : sig type t end) -> 
-				       (COLLECTION with type elt = Element.t))
-		      (G : GAMEDESCRIPTION)                  
+                                       (COLLECTION with type elt = Element.t))
+                      (G : GAMEDESCRIPTION)                  
        : (GAMESOLVER with type state = G.state
                       and type move = G.move) =
   struct
@@ -77,3 +77,4 @@ assignments.
 ......................................................................*)
 
 let minutes_spent_gamesolve () : int = failwith "not provided" ;;
+let minutes_spent_writeup () : int = failwith "not provided" ;;

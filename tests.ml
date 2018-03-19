@@ -2,20 +2,29 @@
                                 CS 51
                              Spring 2018
                         Problem Set 5: Search
- 
-                    Testing Tile and Maze Puzzles
- *)
+
+                     Testing Tile and Maze Puzzles
+
+In this file, we provide some tests of the game solver by generating
+random tile and maze puzzles and running the various solving methods
+(depth-first, breadth-first, etc.) on the examples. This code requires
+working versions of the Collections and Gamesolve modules, so it won't
+compile until you've completed those parts of the problem set. Once
+those are done, however, you can build tests.byte and run it to watch
+some puzzles being solved and get some timings. This will be useful in
+designing your own experiments, as required in Problem 3 of the problem
+set.  *)
+
 open CS51
+
 open Collections
 open Tiles
 open Mazes
 open Gamedescription
 open Gamesolve
-
-(*
-
-                SAMPLE TILE GAME TESTING
-
+        
+(*......................................................................
+                       SAMPLE TILE GAME TESTING
 *)
 
 (* initialize to known seed for reproducibility *)
@@ -98,10 +107,8 @@ let test_tile_game () : unit =
   
 let _ = test_tile_game() ;;
 
-(*
-
-                  SAMPLE MAZE GAME TESTING
-
+(*......................................................................
+                       SAMPLE MAZE GAME TESTING
 *)
 
 let init_maze = [|
@@ -112,12 +119,10 @@ let init_maze = [|
     [| EmptySpace; Wall; EmptySpace; EmptySpace; EmptySpace|];
    |] ;;
 
-
-(* square_maze: given the 5 * 5 initial maze above, and a "ct" 
-   number of times to square it, generates a maze that is 
-   of size (5 * ct) x (5 * ct), with the initial maze tiled
-   on it *)
-let square_maze (ct: int) : maze = 
+(* square_maze -- Given the 5 * 5 initial maze above, and a "ct"
+   number of times to square it, generates a maze that is of size (5 *
+   ct) x (5 * ct), with the initial maze tiled on it *)
+let square_maze (ct : int) : maze = 
   let new_maze = Array.make_matrix (5 * ct) (5 * ct) EmptySpace in 
   let col_bound = (5 * ct) in 
   let row_bound = (5 * ct) - 5 in 
@@ -130,17 +135,18 @@ let square_maze (ct: int) : maze =
       (* This is atrocious and should probably be done with one fold *)
       let _ = 
         (Array.blit init_maze.(crow mod 5) 0 new_maze.(crow) ccol 5;
-        Array.blit init_maze.((crow + 1) mod 5) 0 new_maze.(crow + 1) ccol 5;
-        Array.blit init_maze.((crow + 2) mod 5) 0 new_maze.(crow + 2) ccol 5;
-        Array.blit init_maze.((crow + 3) mod 5) 0 new_maze.(crow + 3) ccol 5;
-        Array.blit init_maze.((crow + 4)mod 5) 0 new_maze.(crow + 4) ccol 5;) 
+         Array.blit init_maze.((crow + 1) mod 5) 0 new_maze.(crow + 1) ccol 5;
+         Array.blit init_maze.((crow + 2) mod 5) 0 new_maze.(crow + 2) ccol 5;
+         Array.blit init_maze.((crow + 3) mod 5) 0 new_maze.(crow + 3) ccol 5;
+         Array.blit init_maze.((crow + 4)mod 5) 0 new_maze.(crow + 4) ccol 5;) 
       in
       (* Keep on recursing *)
       copy_maze (crow) (ccol + 5) in
   copy_maze 0 0 ;;
-      
+  
 (* Note that once the mazes get too big, the OCaml graphics module can't 
-  properly render them *)
+   properly render them *)
+  
 module TestMazeI : MAZEINFO = 
   struct
     let maze = square_maze 1
@@ -165,9 +171,8 @@ module TestMazeIII : MAZEINFO =
     let dims = (15, 15)
   end
     
-    
 (* TestMazeGame functor, returns a module that has one function (run_tests)
-*)
+ *)
 module TestMazeGame(M : MAZEINFO) = 
   struct
     let run_tests () = 
@@ -179,7 +184,7 @@ module TestMazeGame(M : MAZEINFO) =
       let module FastBFSG = FastBFSSolver(MGame) in 
       let module BFSG = BFSSolver(MGame) in 
       Printf.printf("TESTING MAZE GAME...\n");
-
+      
       (* Solve the BFS maze and make sure that the path reaches the goal *)
       Printf.printf("Regular BFS time:\n");
       let (bfs_path, bfs_expanded) = call_reporting_time BFSG.solve ()  in
@@ -195,7 +200,7 @@ module TestMazeGame(M : MAZEINFO) =
          same, as BFS always finds the shortest path *)
       assert ((List.length fbfs_path) = (List.length bfs_path));
       
-     (* Solve the DFS maze and make sure the path reaches the goal *)
+      (* Solve the DFS maze and make sure the path reaches the goal *)
       Printf.printf("DFS time:\n");
       let (dfs_path, dfs_expanded) = call_reporting_time DFSG.solve ()  in
       assert (MGame.is_goal (MGame.execute_moves dfs_path));
@@ -204,12 +209,13 @@ module TestMazeGame(M : MAZEINFO) =
       BFSG.draw bfs_expanded bfs_path;
       DFSG.draw dfs_expanded dfs_path    
   end ;;
-
+  
 (* Run the testing for each of our test mazes *)
 module MI   = TestMazeGame(TestMazeI)
 module MII  = TestMazeGame(TestMazeII)
 module MIII = TestMazeGame(TestMazeIII)
 
-let _ = MI.run_tests();
+let _ =
+  MI.run_tests();
   MII.run_tests();
   MIII.run_tests();

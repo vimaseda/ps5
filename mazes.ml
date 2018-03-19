@@ -29,7 +29,7 @@ type direction = Up | Down | Left | Right
 (* Maze puzzles -- Information about a particular instance of a maze,
    providing the dimensions of the maze, its contents, and the initial
    position and goal position *)
-		  
+                  
 module type MAZEINFO =
 sig 
     val dims : int * int
@@ -43,7 +43,7 @@ end
    GAMEDESCRIPTION module implementing a a maze puzzle *)
 module MakeMazeGameDescription (M : MAZEINFO)
        : (GAMEDESCRIPTION with type state = position
-			   and type move = direction) = 
+                           and type move = direction) = 
   struct
     
     (* Type state is where the player is currently located in the maze *)
@@ -94,20 +94,24 @@ module MakeMazeGameDescription (M : MAZEINFO)
         print_int (snd s);
         Printf.printf(") ")
 
+    let execute_move (board : state) (m : move) : state =
+      let x, y = board in 
+      let new_board = 
+        match m with 
+        | Left -> x, y + 1
+        | Right -> x, y - 1
+        | Up -> x - 1, y
+        | Down -> x + 1, y in
+      if validate_pos new_board then new_board
+      else raise InvalidMove
+
     let execute_moves (path : move list) : state = 
-        let rec execute_helper (board : state) (p : move list) : state = 
-            if not (validate_pos board) then raise InvalidMove
-            else 
-              match p with 
-              | [] -> board 
-              | hd :: tl -> 
-                  let x, y = board in 
-                  match hd with 
-                  | Left -> execute_helper (x, y + 1) tl 
-                  | Right -> execute_helper (x, y - 1) tl
-                  | Up -> execute_helper (x - 1, y) tl
-                  | Down -> execute_helper (x + 1, y) tl in 
-               execute_helper initial_state path
+      let rec execute_helper (board : state) (p : move list) : state =
+        match p with 
+        | [] -> board 
+        | first :: rest ->
+           execute_helper (execute_move board first) rest in
+      execute_helper initial_state path
                        
     (* Draws the map for a given maze. *)
     let draw_maze (maze_map : space array array) (elt_width : int) (elt_height : int) : unit =
