@@ -184,18 +184,19 @@ module MakeTileGameDescription (T : TILEINFO)
       let (w, h) = T.dims in 
       i >= 0 && i < h && j >= 0 && j < h
 
-    let rec move_helper (board : state) (p : move list) : state = 
-        let e = find_empty board in 
-        let new_board = copy_board board in 
-        match p with 
-        | [] -> board
-        | hd :: tl -> 
-           let new_empty = move_to_fun hd e in 
-           if (validate_pos new_empty) then
-            let _ = swap_tiles new_board e new_empty in 
-            move_helper new_board tl 
-           else raise InvalidMove
-      in move_helper initial_state path
+    let execute_moves (path : move list) : state = 
+      let rec move_helper (board : state) (p : move list) : state = 
+          let e = find_empty board in 
+          let new_board = copy_board board in 
+          match p with 
+          | [] -> board
+          | hd :: tl -> 
+              let new_empty = move_to_fun hd e in 
+              if (not (validate_pos new_empty)) then raise InvalidMove
+              else
+                let _ = swap_tiles new_board e new_empty in 
+                move_helper new_board tl 
+        in move_helper initial_state path
                      
     let neighbors (s : state) : (state * move) list =
       (* Helper function that calls swap_tiles *)

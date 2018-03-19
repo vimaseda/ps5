@@ -1,4 +1,3 @@
-# 1 "draw.mlpp"
 (*
                                 CS 51
                              Spring 2018

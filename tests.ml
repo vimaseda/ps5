@@ -37,8 +37,8 @@ let rand_elt l : board =
    random moves on the solved board *)
 let random_tileboard () : board =
   let cINITIAL_MOVE_COUNT = 45 in
-  let module G : (GAMEDESCRIPTION with type state = board
-                                   and type move = direction) = 
+  let module G : (GAMEDESCRIPTION with type state = Tiles.board
+                                   and type move = Tiles.direction) = 
     MakeTileGameDescription (struct
                               let initial = solved
                               let dims = dims
@@ -53,14 +53,15 @@ let random_tileboard () : board =
 let test_tile_game () : unit =
 
   (* Generate a game with a random initial position *)
-  let module G : (GAMEDESCRIPTION with type state = board
-                    and type move = direction) = 
+  let module G : (GAMEDESCRIPTION with type state = Tiles.board
+                    and type move = Tiles.direction) = 
     MakeTileGameDescription 
       (struct
           let initial = random_tileboard () 
           let dims = dims
       end) in
   
+  Printf.printf("TESTING RANDOMLY GENERATING TILEGAME...\n");
   (* Guarantee that the initial state is not the goal state *)
   assert (not (G.is_goal G.initial_state));
   
@@ -70,12 +71,12 @@ let test_tile_game () : unit =
   let module FastBFSG = FastBFSSolver(G) in
 
   (* Run the solvers and report the results *)
-  Printf.printf("Regular BFS:\n");
+  Printf.printf("Regular BFS time:\n");
   let (bfs_path, bfs_expanded) = call_reporting_time BFSG.solve ()  in
   flush stdout;
   assert (G.is_goal (G.execute_moves bfs_path));
 
-  Printf.printf("Faster BFS:\n");
+  Printf.printf("Faster BFS time:\n");
   let (fbfs_path, bfs_expanded) = call_reporting_time FastBFSG.solve ()  in
   (* For breadth first search, you should also check the length *)
   flush stdout;
@@ -90,7 +91,7 @@ let test_tile_game () : unit =
   flush stdout;
   DFSG.draw dfs_expanded dfs_path;
   *)
-  Printf.printf("done testing\n");
+  Printf.printf("DONE TESTING RANDOMLY GENERATED TILE GAME\n");
 
   (* Display the path found by one of the solvers *)
   BFSG.draw bfs_expanded bfs_path ;;
@@ -177,13 +178,16 @@ module TestMazeGame(M : MAZEINFO) =
       let module DFSG = DFSSolver(MGame) in 
       let module FastBFSG = FastBFSSolver(MGame) in 
       let module BFSG = BFSSolver(MGame) in 
-      
+      Printf.printf("TESTING MAZE GAME...\n");
+
       (* Solve the BFS maze and make sure that the path reaches the goal *)
+      Printf.printf("Regular BFS time:\n");
       let (bfs_path, bfs_expanded) = call_reporting_time BFSG.solve ()  in
       assert (MGame.is_goal (MGame.execute_moves bfs_path));
       
       (* Solve the BFS maze with the efficient queue and make sure the
          path reaches the goal *)
+      Printf.printf("Fast BFS time:\n");
       let (fbfs_path, bfs_expanded) = call_reporting_time FastBFSG.solve ()  in
       assert (MGame.is_goal (MGame.execute_moves fbfs_path));
       
@@ -192,8 +196,11 @@ module TestMazeGame(M : MAZEINFO) =
       assert ((List.length fbfs_path) = (List.length bfs_path));
       
      (* Solve the DFS maze and make sure the path reaches the goal *)
+      Printf.printf("DFS time:\n");
       let (dfs_path, dfs_expanded) = call_reporting_time DFSG.solve ()  in
       assert (MGame.is_goal (MGame.execute_moves dfs_path));
+
+      Printf.printf("DONE TESTING MAZE GAME, DISPLAYING MAZE NOW\n");
       BFSG.draw bfs_expanded bfs_path;
       DFSG.draw dfs_expanded dfs_path    
   end ;;

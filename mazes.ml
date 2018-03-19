@@ -96,7 +96,8 @@ module MakeMazeGameDescription (M : MAZEINFO)
 
     let execute_moves (path : move list) : state = 
         let rec execute_helper (board : state) (p : move list) : state = 
-            if validate_pos board then 
+            if not (validate_pos board) then raise InvalidMove
+            else 
               match p with 
               | [] -> board 
               | hd :: tl -> 
@@ -107,7 +108,6 @@ module MakeMazeGameDescription (M : MAZEINFO)
                   | Up -> execute_helper (x - 1, y) tl
                   | Down -> execute_helper (x + 1, y) tl in 
                execute_helper initial_state path
-            else raise InvalidMove
                        
     (* Draws the map for a given maze. *)
     let draw_maze (maze_map : space array array) (elt_width : int) (elt_height : int) : unit =
