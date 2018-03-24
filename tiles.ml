@@ -182,7 +182,7 @@ module MakeTileGameDescription (T : TILEINFO)
 
     let validate_pos (i, j) : bool = 
       let (w, h) = T.dims in 
-      i >= 0 && i < h && j >= 0 && j < h
+      i >= 0 && i < h && j >= 0 && j < w
 
     let execute_moves (path : move list) : state = 
       let rec move_helper (board : state) (p : move list) : state = 
