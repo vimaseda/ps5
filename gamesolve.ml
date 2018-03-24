@@ -77,4 +77,3 @@ assignments.
 ......................................................................*)
 
 let minutes_spent_gamesolve () : int = failwith "not provided" ;;
-let minutes_spent_writeup () : int = failwith "not provided" ;;
