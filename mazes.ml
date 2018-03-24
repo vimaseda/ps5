@@ -73,7 +73,7 @@ module MakeMazeGameDescription (M : MAZEINFO)
 
     let validate_pos (i,j) : bool = 
        let (w, h) = M.dims in
-       i >= 0 && i < w && j >= 0 && j < h
+       i >= 0 && i < h && j >= 0 && j < w
 
     let neighbors (playerPos : state) : (state * move) list =
       [Up; Down; Left; Right]
