@@ -73,7 +73,7 @@ let test_tile_game () : unit =
   Printf.printf("TESTING RANDOMLY GENERATING TILEGAME...\n");
   (* Guarantee that the initial state is not the goal state *)
   assert (not (G.is_goal G.initial_state));
-  
+
   (* Create some solvers *)
   let module DFSG = DFSSolver(G) in 
   let module BFSG = BFSSolver(G) in

@@ -122,7 +122,28 @@ module MakeQueueList (Element : sig type t end)
 module MakeQueueStack (Element : sig type t end) 
        : (COLLECTION with type elt = Element.t) =
   struct
-    failwith "MakeQueueStack not implemented"
+    exception Empty
+                
+    type elt = Element.t
+    type collection = elt list * elt list
+                          
+    let empty : collection = ([], [])
+                               
+    let length ((s1, s2) : collection) : int = 
+      (List.length s1) + (List.length s2)
+                  
+    let is_empty (d : collection) : bool = 
+      d = empty 
+            
+    let add (e : elt) ((s1, s2) : collection) : collection = 
+      (s1, e :: s2)
+      
+    let take (d : collection)  :  elt * collection = 
+      match d with 
+      | hd :: tl, s2 -> (hd, (tl, s2))
+      | [], s2 -> match List.rev s2 with
+                  | hd :: tl -> (hd, (tl, []))
+                  | _ -> raise Empty
   end
 
-let minutes_spent_collections () : int = failwith "not provided" ;;
+let minutes_spent_collections () : int = 20 ;;

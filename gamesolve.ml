@@ -55,7 +55,34 @@ module MakeGameSolver (DSFunc : functor(Element : sig type t end) ->
        : (GAMESOLVER with type state = G.state
                       and type move = G.move) =
   struct
-    failwith "MakeGameSolver not implemented"
+    type state = G.state
+    type move = G.move
+    exception CantReachGoal
+
+    module MyOtherMod = DSFunc(struct type t = (G.state * (G.move list)) end)
+    let pending = MyOtherMod.add (G.initial_state, []) MyOtherMod.empty
+    module States = Set.Make(struct type t = state let compare = compare end)
+
+    let solve () =
+        let rec check_pend pend vis exp =
+          if MyOtherMod.is_empty pend then raise CantReachGoal else
+          let (s, m), t = MyOtherMod.take pend in
+              match States.mem s vis with
+              | true -> check_pend t vis exp
+              | false -> let exp' = s :: exp in
+                         if G.is_goal s then (List.rev m, List.rev exp') 
+                         else
+                          let rec combine x y =
+                            match x with
+                            | [] -> y
+                            | (s, m1) :: t -> combine t (MyOtherMod.add (s, m1 :: m) y) in
+                          check_pend (combine (G.neighbors s) t) (States.add s vis) exp'
+        in check_pend pending States.empty [G.initial_state]
+
+    let draw = G.draw
+    let print_state = G.print_state
+
+
   end ;;
      
 (* DFSSolver and BFSSolver: Higher-order Functors that take in a
